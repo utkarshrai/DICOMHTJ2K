@@ -35,9 +35,11 @@ openjphjs.onRuntimeInitialized = async (_) => {
     // Get input parameters
     const inputFilePath = getInputFilePath();
     const outputFilePath = getOutputFilePath();
+    console.log('DICOM_Uncompressed File):', inputFilePath);
 
     // Initialize decoders
     await dcmjsImaging.NativePixelDecoder.initializeAsync();
+    const startTime = performance.now();
 
     //////////////////////////////////////////////////////////////////
     // READ AND PARSE THE DICOM P10 FILE
@@ -74,11 +76,15 @@ openjphjs.onRuntimeInitialized = async (_) => {
         )
       );
     }
-
+    const endTime = performance.now();
+    const elapsedTime = endTime - startTime;
+    console.log('Time taken for encoding (milliseconds):', elapsedTime);
     //////////////////////////////////////////////////////////////////
     // WRITE OUT DICOM P10 FILE WITH HTJ2K PIXEL DATA
     //////////////////////////////////////////////////////////////////
     writeDICOMP10File(dataset, meta, isUsingColorTransform, encodedFrames, outputFilePath);
+    console.log('DICOM_HTJ2K File):', outputFilePath);
+    
   } catch (ex) {
     console.log('exception', ex);
   }
